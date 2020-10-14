@@ -12,9 +12,9 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import {Component} from 'react';
-import { StackNavigator,getParam } from 'react-navigation';
+import AsyncStorage from '@react-native-community/async-storage';
 
-class RegisterScreen extends Component {
+class EditProfile extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -25,18 +25,49 @@ class RegisterScreen extends Component {
       phone: '',
       email: '',
     };
-    this.register = this.register.bind(this);
+    this.update = this.update.bind(this);
   }
-  register = () => {
-    console.log(this.state.username);
-    fetch('http://localhost:8888/api/user', {
-      method: 'POST',
+  componentDidMount() {
+    this.loadData().done();
+  }
+  loadData = async () => {
+    var values = await AsyncStorage.getItem('username');
+    var url = 'http://localhost:8888/api/user/' + values;
+    console.log(url);
+    fetch(url, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .then((res1) => {
+        console.log(res1);
+        this.setState({
+          username: res1.username,
+          password: res1.password,
+          phone: res1.phone,
+          fullName: res1.fullName,
+          address: res1.adress,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        alert(err);
+      });
+  };
+  update = () => {
+      console.log(this.state.username,this.state.password,this.state.phone,this.state.address,this.state.fullName)
+    var url = 'http://localhost:8888/api/user/' + this.state.username;
+    console.log(url);
+    fetch(url, {
+      method: 'PUT',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        username: this.state.username,
         password: this.state.password,
         adress: this.state.address,
         email: this.state.email,
@@ -47,52 +78,30 @@ class RegisterScreen extends Component {
       .then((res) => res.json())
       .then((res1) => {
         console.log(res1);
-        // alert(res1.message);
         if (res1.status === 1) {
-          alert(res1.message);
-          this.props.navigation.popToTop();
+          alert('Cập nhật thành công');
+          this.props.navigation.pop();
         } else {
-          alert(res1.message);
+          alert('Cập nhật thất bại');
         }
       })
       .catch((err) => {
         console.log(err);
         alert(err);
       });
-  };
+  }
   render() {
     return (
       <View style={{flex: 1}}>
         <ScrollView keyboardShouldPersistTaps="handled">
           <View style={{alignItems: 'center'}}>
             <Image
-              source={require('../Image/99coffee.png')}
+              source={require('../../Image/99coffee.png')}
               style={styles.img}
             />
+            <Text style={styles.name}>Edit Profile</Text>
           </View>
           <KeyboardAvoidingView enabled>
-            <View style={styles.SectionStyle}>
-              <TextInput
-                style={styles.inputStyle}
-                underlineColorAndroid="gray"
-                value={this.state.username}
-                onChangeText={(username) => this.setState({username: username})}
-                placeholder="Enter UserName"
-                keyboardType="default"
-                returnKeyType="next"
-              />
-            </View>
-            <View style={styles.SectionStyle}>
-              <TextInput
-                style={styles.inputStyle}
-                secureTextEntry={true}
-                underlineColorAndroid="gray"
-                value={this.state.password}
-                onChangeText={(password) => this.setState({password: password})}
-                placeholder="Enter Password"
-                keyboardType="default"
-              />
-            </View>
             <View style={styles.SectionStyle}>
               <TextInput
                 style={styles.inputStyle}
@@ -102,16 +111,6 @@ class RegisterScreen extends Component {
                 placeholder="Enter Full Name"
                 keyboardType="default"
                 returnKeyType="next"
-              />
-            </View>
-            <View style={styles.SectionStyle}>
-              <TextInput
-                style={styles.inputStyle}
-                underlineColorAndroid="#F6F6F7"
-                value={this.state.email}
-                onChangeText={(email) => this.setState({email: email})}
-                placeholder="Enter Email"
-                keyboardType="email-address"
               />
             </View>
             <View style={styles.SectionStyle}>
@@ -139,8 +138,8 @@ class RegisterScreen extends Component {
             <TouchableOpacity
               style={styles.buttonStyle}
               activeOpacity={0.5}
-              onPress={this.register}>
-              <Text style={styles.buttonTextStyle}>REGISTER</Text>
+              onPress={this.update}>
+              <Text style={styles.buttonTextStyle}>Save</Text>
             </TouchableOpacity>
           </KeyboardAvoidingView>
         </ScrollView>
@@ -148,7 +147,7 @@ class RegisterScreen extends Component {
     );
   }
 }
-export default RegisterScreen;
+export default EditProfile;
 
 const styles = StyleSheet.create({
   SectionStyle: {
@@ -158,6 +157,10 @@ const styles = StyleSheet.create({
     marginLeft: 35,
     marginRight: 35,
     margin: 10,
+  },
+  name: {
+    fontSize: 22,
+    fontWeight: '500',
   },
   buttonStyle: {
     backgroundColor: '#7DE24E',

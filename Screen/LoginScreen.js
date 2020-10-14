@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {Component} from 'react';
-import { StackNavigator } from 'react-navigation';
+import {StackNavigator} from 'react-navigation';
 class LoginScreen extends Component {
   render() {
     return (
@@ -61,7 +61,7 @@ class LoginScreen extends Component {
                 <Text style={styles.buttonTextStyle}>LOGIN</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={()=>this.props.navigation.navigate("Register")}>
+                onPress={() => this.props.navigation.navigate('Register')}>
                 <Text style={styles.registerTextStyle}>
                   New Here ? Register
                 </Text>
@@ -101,7 +101,7 @@ class LoginScreen extends Component {
 
           AsyncStorage.setItem('username', username);
 
-		  this.props.navigation.navigate("User1");
+          this.props.navigation.navigate('User');
         } else {
           alert(res1.message);
         }
