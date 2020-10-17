@@ -61,7 +61,7 @@ class LoginScreen extends Component {
                 <Text style={styles.buttonTextStyle}>LOGIN</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('Register')}>
+                onPress={() => this.props.navigation.navigate('Register',{username:this.state.username})}>
                 <Text style={styles.registerTextStyle}>
                   New Here ? Register
                 </Text>
@@ -81,35 +81,45 @@ class LoginScreen extends Component {
     this.test = this.test.bind(this);
   }
   test = () => {
-    console.log(this.state.username);
-    fetch('http://localhost:8888/api/user/login', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        username: this.state.username,
-        password: this.state.password,
-      }),
-    })
-      .then((res) => res.json())
-      .then((res1) => {
-        console.log(res1);
-        if (res1.status === 1) {
-          var username = res1.message;
+    if (this.state.username != '')
+    {
+      if (this.state.password != '')
+      {
+        console.log(this.state.username);
+        fetch('http://localhost:8888/api/user/login', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username: this.state.username,
+            password: this.state.password,
+          }),
+        })
+          .then((res) => res.json())
+          .then((res1) => {
+            console.log(res1);
+            if (res1.status === 1) {
+              var username = res1.message;
 
-          AsyncStorage.setItem('username', username);
+              AsyncStorage.setItem('username', username);
 
-          this.props.navigation.navigate('User');
-        } else {
-          alert(res1.message);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        alert(err);
-      });
+              this.props.navigation.navigate('User');
+            } else {
+              alert(res1.message);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            alert(err);
+          });
+      } else {
+        alert('Hãy nhập mật khẩu!!');
+      }
+    } else {
+      alert('Hãy nhập tài khoản !!');
+    }
   };
 }
 export default LoginScreen;

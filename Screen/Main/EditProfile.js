@@ -57,8 +57,10 @@ class EditProfile extends Component {
         alert(err);
       });
   };
+  set=()=>{
+    this.setState({address:this.state.address,phone:this.state.phone});
+  }
   update = () => {
-      console.log(this.state.username,this.state.password,this.state.phone,this.state.address,this.state.fullName)
     var url = 'http://localhost:8888/api/user/' + this.state.username;
     console.log(url);
     fetch(url, {
@@ -80,7 +82,7 @@ class EditProfile extends Component {
         console.log(res1);
         if (res1.status === 1) {
           alert('Cập nhật thành công');
-          this.props.navigation.pop();
+          this.props.navigation.navigate('User',this.set());
         } else {
           alert('Cập nhật thất bại');
         }
@@ -89,7 +91,7 @@ class EditProfile extends Component {
         console.log(err);
         alert(err);
       });
-  }
+  };
   render() {
     return (
       <View style={{flex: 1}}>

@@ -22,6 +22,7 @@ class UserSreen extends Component {
       phone: '',
       email: '',
     };
+    this.eidt = this.eidt.bind(this);
   }
   componentDidMount() {
     this.loadData().done();
@@ -60,6 +61,7 @@ class UserSreen extends Component {
     this.props.navigation.navigate('Change');
   };
   render() {
+    console.log(this.props);
     return (
       <ScrollView>
         <View style={styles.container}>
@@ -189,6 +191,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     width: 250,
     borderRadius: 30,
-    backgroundColor: '#7DE24E'
+    backgroundColor: '#7DE24E',
   },
 });

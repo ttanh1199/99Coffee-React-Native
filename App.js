@@ -43,6 +43,7 @@ class App extends Component {
 		      <Stack.Screen name="User" component={UserSreen} />
           <Stack.Screen name="Edit" component={EditProfile} />
           <Stack.Screen name="Change" component={ChangePassword} />
+          
         </Stack.Navigator>
       </NavigationContainer>
     );

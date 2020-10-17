@@ -12,7 +12,7 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import {Component} from 'react';
-import { StackNavigator,getParam } from 'react-navigation';
+import {StackNavigator, getParam} from 'react-navigation';
 
 class RegisterScreen extends Component {
   constructor(props) {
@@ -28,39 +28,59 @@ class RegisterScreen extends Component {
     this.register = this.register.bind(this);
   }
   register = () => {
-    console.log(this.state.username);
-    fetch('http://localhost:8888/api/user', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        username: this.state.username,
-        password: this.state.password,
-        adress: this.state.address,
-        email: this.state.email,
-        phone: this.state.phone,
-        fullName: this.state.fullName,
-      }),
-    })
-      .then((res) => res.json())
-      .then((res1) => {
-        console.log(res1);
-        // alert(res1.message);
-        if (res1.status === 1) {
-          alert(res1.message);
-          this.props.navigation.popToTop();
+    if (this.state.username != '') {
+      if (this.state.password != '') {
+        if (this.state.fullName != '') {
+          if (this.state.address != '') {
+            if (this.state.phone != '') {
+              console.log(this.state.username);
+              fetch('http://localhost:8888/api/user', {
+                method: 'POST',
+                headers: {
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  username: this.state.username,
+                  password: this.state.password,
+                  adress: this.state.address,
+                  phone: this.state.phone,
+                  fullName: this.state.fullName,
+                }),
+              })
+                .then((res) => res.json())
+                .then((res1) => {
+                  console.log(res1);
+                  // alert(res1.message);
+                  if (res1.status === 1) {
+                    alert(res1.message);
+                    this.props.navigation.popToTop();
+                  } else {
+                    alert(res1.message);
+                  }
+                })
+                .catch((err) => {
+                  console.log(err);
+                  alert(err);
+                });
+            } else {
+              alert('Hãy nhập số điện thoại');
+            }
+          } else {
+            alert('Hãy nhập địa chỉ');
+          }
         } else {
-          alert(res1.message);
+          alert('Hãy nhập họ tên');
         }
-      })
-      .catch((err) => {
-        console.log(err);
-        alert(err);
-      });
+      } else {
+        alert('Hãy nhập mât khẩu');
+      }
+    } else {
+      alert('Hãy nhập tài khoản');
+    }
   };
   render() {
+    console.log(this.props.route.params);
     return (
       <View style={{flex: 1}}>
         <ScrollView keyboardShouldPersistTaps="handled">
@@ -102,16 +122,6 @@ class RegisterScreen extends Component {
                 placeholder="Enter Full Name"
                 keyboardType="default"
                 returnKeyType="next"
-              />
-            </View>
-            <View style={styles.SectionStyle}>
-              <TextInput
-                style={styles.inputStyle}
-                underlineColorAndroid="#F6F6F7"
-                value={this.state.email}
-                onChangeText={(email) => this.setState({email: email})}
-                placeholder="Enter Email"
-                keyboardType="email-address"
               />
             </View>
             <View style={styles.SectionStyle}>
